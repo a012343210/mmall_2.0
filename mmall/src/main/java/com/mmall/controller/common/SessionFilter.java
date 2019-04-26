@@ -1,11 +1,10 @@
 package com.mmall.controller.common;
 
 import com.mmall.common.Const;
-import com.mmall.common.RedisPool;
 import com.mmall.pojo.User;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtils;
-import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.*;
@@ -28,9 +27,9 @@ public class SessionFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String login_token = CookieUtil.getCookie(httpServletRequest);
         if(StringUtils.isNotEmpty(login_token)){
-            User user = JsonUtils.String2Object(RedisPoolUtil.get(login_token), User.class);
+            User user = JsonUtils.String2Object(RedisShardedPoolUtil.get(login_token), User.class);
             if(user != null){
-                RedisPoolUtil.expire(login_token, Const.RedisCacheExTime.REDIS_CACHE_EX_TIME);
+                RedisShardedPoolUtil.expire(login_token, Const.RedisCacheExTime.REDIS_CACHE_EX_TIME);
             }
         }
         filterChain.doFilter(servletRequest,servletResponse);

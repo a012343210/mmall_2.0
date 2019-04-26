@@ -11,7 +11,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.IOrderService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtils;
-import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class OrderController {
         if (StringUtils.isEmpty(login_token)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }
-        String userJson = RedisPoolUtil.get(login_token);
+        String userJson = RedisShardedPoolUtil.get(login_token);
         User user = JsonUtils.String2Object(userJson, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
@@ -63,7 +63,7 @@ public class OrderController {
         if (StringUtils.isEmpty(login_token)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }
-        String userJson = RedisPoolUtil.get(login_token);
+        String userJson = RedisShardedPoolUtil.get(login_token);
         User user = JsonUtils.String2Object(userJson, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
@@ -79,7 +79,7 @@ public class OrderController {
         if (StringUtils.isEmpty(login_token)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }
-        String userJson = RedisPoolUtil.get(login_token);
+        String userJson = RedisShardedPoolUtil.get(login_token);
         User user = JsonUtils.String2Object(userJson, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
@@ -95,7 +95,7 @@ public class OrderController {
         if (StringUtils.isEmpty(login_token)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }
-        String userJson = RedisPoolUtil.get(login_token);
+        String userJson = RedisShardedPoolUtil.get(login_token);
         User user = JsonUtils.String2Object(userJson, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
@@ -110,7 +110,7 @@ public class OrderController {
         if (StringUtils.isEmpty(login_token)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }
-        String userJson = RedisPoolUtil.get(login_token);
+        String userJson = RedisShardedPoolUtil.get(login_token);
         User user = JsonUtils.String2Object(userJson, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
@@ -126,7 +126,7 @@ public class OrderController {
         if (StringUtils.isEmpty(login_token)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }
-        String userJson = RedisPoolUtil.get(login_token);
+        String userJson = RedisShardedPoolUtil.get(login_token);
         User user = JsonUtils.String2Object(userJson, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
@@ -185,7 +185,7 @@ public class OrderController {
         if (StringUtils.isEmpty(login_token)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }
-        String userJson = RedisPoolUtil.get(login_token);
+        String userJson = RedisShardedPoolUtil.get(login_token);
         User user = JsonUtils.String2Object(userJson, User.class);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
