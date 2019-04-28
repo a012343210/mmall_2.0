@@ -87,7 +87,7 @@ public class OrderManageController {
     @ResponseBody
     public ServerResponse<PageInfo> orderSearch(HttpServletRequest httpServletRequest, Long orderNo,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                                @RequestParam(value = "pageSize",defaultValue = "10")int pageSize){
-           String login_token = CookieUtil.getCookie(httpServletRequest);
+        String login_token = CookieUtil.getCookie(httpServletRequest);
         if(StringUtils.isEmpty(login_token)){
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }

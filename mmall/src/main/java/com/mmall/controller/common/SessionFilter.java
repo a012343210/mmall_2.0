@@ -23,6 +23,15 @@ public class SessionFilter implements Filter {
     }
 
     @Override
+    /**
+     *
+     * 功能描述: 重置redis中hsx_login_token的存在时间
+     *
+     * @param: [servletRequest, servletResponse, filterChain]
+     * @return: void
+     * @auther: Administrator
+     * @date: 2019/4/28 22:51
+     */
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String login_token = CookieUtil.getCookie(httpServletRequest);

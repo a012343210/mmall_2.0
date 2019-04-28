@@ -26,7 +26,7 @@ public class CookieUtil {
      */
     public static void writeCookie(HttpServletResponse response, String token){
         Cookie ck = new Cookie(COOKIE_NAME,token);
-        ck.setPath("/");//  "/"指根目录 "test"指只有在test及其子域名可以访问到这个cookie
+        ck.setPath("/");//  "/"指根目录 "/test"指只有在test及其子域名可以访问到这个cookie
         ck.setMaxAge(60*60*24);//当值为-1时,表示永久存在
         ck.setDomain(COOKIE_DOMAIN);
         response.addCookie(ck);

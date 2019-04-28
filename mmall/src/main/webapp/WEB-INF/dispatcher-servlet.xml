@@ -7,8 +7,10 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
+    <!--use-default-filters默认扫描关闭 只开启controller扫描-->
+    <context:component-scan base-package="com.mmall.controller" annotation-config="true" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -38,6 +40,17 @@
         <property name="maxInMemorySize" value="4096" />
         <property name="defaultEncoding" value="UTF-8"></property>
     </bean>
-
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--
+                /** 表示当前层级及所有子层级
+                /* 表示当前层级 不包括子层级
+                / 表示根目录请求
+            -->
+            <mvc:mapping path="/manage/**"/>
+            <mvc:exclude-mapping path="/manage/user/login.do" />
+            <bean class="com.mmall.controller.common.AuthorityInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>
