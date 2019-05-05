@@ -216,4 +216,11 @@
     </if>
   </select>
 
+  <select id="selectStockByProductId"  resultType="integer">
+    SELECT stock
+    FROM mmall_product
+    where id = #{id}
+    for update
+  </select>
+
 </mapper>

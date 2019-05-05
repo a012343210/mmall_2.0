@@ -20,13 +20,13 @@ public interface OrderMapper {
 
     Order selectByUserIdAndOrderNo(@Param("userId")Integer userId,@Param("orderNo")Long orderNo);
 
-
     Order selectByOrderNo(Long orderNo);
-
-
 
     List<Order> selectByUserId(Integer userId);
 
-
     List<Order> selectAllOrder();
+
+    List<Order> selectOrderByStatusAndTime(@Param("status") Integer status,@Param("date") String date);
+
+    void closeOrder(Integer id );
 }

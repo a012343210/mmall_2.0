@@ -41,6 +41,7 @@ import com.mmall.vo.ShippingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,9 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * Created by geely
- */
 @Slf4j
 @Service("iOrderService")
 public class OrderServiceImpl implements IOrderService {
@@ -369,7 +367,27 @@ public class OrderServiceImpl implements IOrderService {
         return orderVoList;
     }
 
+    public void closeOrder(int hour){
+        Date closeDataTime = org.apache.commons.lang.time.DateUtils.addHours(new Date(), -hour);
+        List<Order> orderList = orderMapper.selectOrderByStatusAndTime(Const.OrderStatusEnum.NO_PAY.getCode(), DateTimeUtil.dateToStr(closeDataTime));
+        for(Order order : orderList){
+            List<OrderItem> orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
+            for(OrderItem orderItem : orderItemList){
+                //可能出现商品删除等情况 用Integer防止出现null
+                Integer stock = productMapper.selectStockByProductId(orderItem.getProductId());
+                if(stock == null){
+                    continue;
+                }
+                //关单前商品库存需要重新计算
+                Product product = new Product();
+                product.setId(orderItem.getProductId());
+                product.setStock(stock + orderItem.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+            }
+            orderMapper.closeOrder(order.getId());
+        }
 
+    }
 
 
 

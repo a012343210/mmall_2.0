@@ -236,6 +236,22 @@
     ORDER BY  create_time desc
   </select>
 
+  <select id="selectOrderByStatusAndTime" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    from mmall_order
+    WHERE status = #{status}
+    <![CDATA[
+    and create_time <= #{date}
+    ]]>
+  </select>
+
+  <update id="closeOrder">
+    UPDATE mmall_order
+    set status = 0
+    WHERE id = #{id}
+  </update>
+
 
 
 

@@ -38,47 +38,14 @@ public class OrderManageController {
     @ResponseBody
     public ServerResponse<PageInfo> orderList(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                               @RequestParam(value = "pageSize",defaultValue = "10")int pageSize){
-
-           String login_token = CookieUtil.getCookie(httpServletRequest);
-        if(StringUtils.isEmpty(login_token)){
-            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
-        }
-        String userJson = RedisShardedPoolUtil.get(login_token);
-        User user = JsonUtils.String2Object(userJson, User.class);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
-
-        }
-        if(iUserService.checkAdminRole(user).isSuccess()){
-            //填充我们增加产品的业务逻辑
-            return iOrderService.manageList(pageNum,pageSize);
-        }else{
-            return ServerResponse.createByErrorMessage("无权限操作");
-        }
+        return iOrderService.manageList(pageNum,pageSize);
     }
 
     @RequestMapping("detail.do")
     @ResponseBody
     public ServerResponse<OrderVo> orderDetail(HttpServletRequest httpServletRequest, Long orderNo){
 
-           String login_token = CookieUtil.getCookie(httpServletRequest);
-        if(StringUtils.isEmpty(login_token)){
-            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
-        }
-        String userJson = RedisShardedPoolUtil.get(login_token);
-        User user = JsonUtils.String2Object(userJson, User.class);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
-
-        }
-        if(iUserService.checkAdminRole(user).isSuccess()){
-            //填充我们增加产品的业务逻辑
-
-            return iOrderService.manageDetail(orderNo);
-        }else{
-            return ServerResponse.createByErrorMessage("无权限操作");
-        }
+        return iOrderService.manageDetail(orderNo);
     }
 
 
@@ -87,22 +54,7 @@ public class OrderManageController {
     @ResponseBody
     public ServerResponse<PageInfo> orderSearch(HttpServletRequest httpServletRequest, Long orderNo,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                                @RequestParam(value = "pageSize",defaultValue = "10")int pageSize){
-        String login_token = CookieUtil.getCookie(httpServletRequest);
-        if(StringUtils.isEmpty(login_token)){
-            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
-        }
-        String userJson = RedisShardedPoolUtil.get(login_token);
-        User user = JsonUtils.String2Object(userJson, User.class);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
-
-        }
-        if(iUserService.checkAdminRole(user).isSuccess()){
-            //填充我们增加产品的业务逻辑
-            return iOrderService.manageSearch(orderNo,pageNum,pageSize);
-        }else{
-            return ServerResponse.createByErrorMessage("无权限操作");
-        }
+        return iOrderService.manageSearch(orderNo,pageNum,pageSize);
     }
 
 
@@ -110,23 +62,7 @@ public class OrderManageController {
     @RequestMapping("send_goods.do")
     @ResponseBody
     public ServerResponse<String> orderSendGoods(HttpServletRequest httpServletRequest, Long orderNo){
-
-           String login_token = CookieUtil.getCookie(httpServletRequest);
-        if(StringUtils.isEmpty(login_token)){
-            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
-        }
-        String userJson = RedisShardedPoolUtil.get(login_token);
-        User user = JsonUtils.String2Object(userJson, User.class);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
-
-        }
-        if(iUserService.checkAdminRole(user).isSuccess()){
-            //填充我们增加产品的业务逻辑
-            return iOrderService.manageSendGoods(orderNo);
-        }else{
-            return ServerResponse.createByErrorMessage("无权限操作");
-        }
+        return iOrderService.manageSendGoods(orderNo);
     }
 
 
