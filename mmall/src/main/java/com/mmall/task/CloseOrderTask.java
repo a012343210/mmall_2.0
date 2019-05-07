@@ -5,6 +5,7 @@ import com.mmall.service.IOrderService;
 import com.mmall.util.PropertiesUtil;
 import com.mmall.util.RedisShardedPoolUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class CloseOrderTask {
         iOrderService.closeOrder(hour);
     }
     //每一分钟执行一次关单
-    @Scheduled(cron = "0 */1 * * * ?")
+    //@Scheduled(cron = "0 */1 * * * ?")
     public void CloseOrderV2(){
         log.info("定时关单启动");
         Long timeout = Long.parseLong(PropertiesUtil.getProperty("close.order.timeout"));
@@ -39,6 +40,30 @@ public class CloseOrderTask {
             //设置成功获取到锁,执行关单
             closeOrder(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
         }else{
+            log.info("没有获得分布式锁:{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
+        }
+        log.info("定时关单结束");
+    }
+
+    //每一分钟执行一次关单
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void CloseOrderV3(){
+        log.info("定时关单启动");
+        Long timeout = Long.parseLong(PropertiesUtil.getProperty("close.order.timeout"));
+        Long result = RedisShardedPoolUtil.setnx(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME, String.valueOf(System.currentTimeMillis()+timeout));
+        if(result != null && result.intValue() == 1){
+            //设置成功获取到锁,执行关单
+            closeOrder(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
+        }else{
+            String oldLockTime = RedisShardedPoolUtil.get(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
+            if(oldLockTime != null && (System.currentTimeMillis() > Long.parseLong(oldLockTime))){
+                String getSetResult = RedisShardedPoolUtil.getSet(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME, String.valueOf(System.currentTimeMillis() + timeout));
+                if(StringUtils.equals(getSetResult,oldLockTime)){
+                    closeOrder(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
+                }else{
+                    log.info("没有获得分布式锁:{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
+                }
+            }
             log.info("没有获得分布式锁:{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
         }
         log.info("定时关单结束");
