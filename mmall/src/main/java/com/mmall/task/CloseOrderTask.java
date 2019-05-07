@@ -72,11 +72,11 @@ public class CloseOrderTask {
     private void closeOrder(String key){
         //设置有效期防止死锁
         RedisShardedPoolUtil.expire(key,50);
-        log.info("当前锁为:{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME,Thread.currentThread().getName());
+        log.info("当前锁为:{},Thread为{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME,Thread.currentThread().getName());
         int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.hour"));
         // iOrderService.closeOrder(hour);
         RedisShardedPoolUtil.del(key);
-        log.info("释放锁为:{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME,Thread.currentThread().getName());
-        log.info("=======================================");
+        log.info("释放锁为:{},Thread为{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME,Thread.currentThread().getName());
+        log.info("========================================");
     }
 }
