@@ -41,7 +41,7 @@ public class CloseOrderTask {
         }else{
             log.info("没有获得分布式锁:{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
         }
-        log.info("定时关单结束");
+        log.info("定时关单结束 ");
     }
 
     private void closeOrder(String key){
