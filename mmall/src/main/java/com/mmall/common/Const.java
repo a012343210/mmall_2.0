@@ -13,6 +13,8 @@ public class Const {
     public static final String USERNAME = "username";
 
     public static final String TOKEN_PREFIX = "token_";
+
+    public static final String CLOSE_ORDER_TASK_LOCK = "CLOSE_ORDER_TASK_LOCK";
     public interface RedisCacheExTime{
         int REDIS_CACHE_EX_TIME = 60 * 30;
     }

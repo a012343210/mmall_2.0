@@ -112,7 +112,6 @@ public class RedisShardedPoolUtil {
     public static Long setnx(String key,String value){
         ShardedJedis jedis = null;
         Long result = null;
-
         try {
             jedis = RedisShardedPool.getJedis();
             result = jedis.setnx(key,value);
