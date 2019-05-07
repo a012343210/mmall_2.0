@@ -147,7 +147,7 @@ public class Const {
     }
     //定时关单
     public interface closeOrderLock{
-        public String CLOSE_ORDER_LOCK_TIME = "CLOSE_ORDER_LOCK_TIME";
+        String CLOSE_ORDER_LOCK_TIME = "CLOSE_ORDER_LOCK_TIME";
     }
 
 
