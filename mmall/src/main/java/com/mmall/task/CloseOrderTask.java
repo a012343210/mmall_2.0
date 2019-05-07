@@ -24,7 +24,7 @@ public class CloseOrderTask {
     private IOrderService iOrderService;
 
     //每一分钟执行一次关单
-    @Scheduled(cron = "0 */1 * * * ?")
+    //@Scheduled(cron = "0 */1 * * * ?")
     public void CloseOrderV1(){
         int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.hour"));
         iOrderService.closeOrder(hour);
