@@ -87,7 +87,7 @@ public class CloseOrderTask {
                 iOrderService.closeOrder(hour);
             }
         } catch (Exception e) {
-            log.info("Redisson 没有获取到分布式锁",e);
+            log.info("Redisson没有获取到分布式锁",e);
         }finally {
             if(!getLock){
                 return;
