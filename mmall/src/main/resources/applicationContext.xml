@@ -15,11 +15,12 @@
 
     <!--<context:annotation-config/>-->
     <aop:aspectj-autoproxy/>
-
+    <!--开启定时器开关-->
     <task:annotation-driven/>
 
-    <import resource="applicationContext-datasource.xml"/>
+ <import resource="applicationContext-datasource.xml"/>
     <import resource="applicationContext-session.xml"/>
+    <import resource="applicationContext-shiro.xml"/>
 
 
 </beans>

@@ -210,7 +210,12 @@
     and id != #{userId}
   </select>
 
-
+  <select id="findUserByUsername" parameterType="string" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_user
+    where username = #{username}
+  </select>
 
 
 

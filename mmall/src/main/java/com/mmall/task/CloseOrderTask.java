@@ -62,6 +62,8 @@ public class CloseOrderTask {
             String oldLockTime = RedisShardedPoolUtil.get(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
             if(oldLockTime != null && (System.currentTimeMillis() > Long.parseLong(oldLockTime))){
                 String getSetResult = RedisShardedPoolUtil.getSet(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME, String.valueOf(System.currentTimeMillis() + timeout));
+                //两次获取的值相同说明没有其他线程正在使用这个锁
+                //getSetResult值与oldLockTime值不同  或者 getSetResult为null 说明有线程正在使用 不需要重新获得锁
                 if(StringUtils.equals(getSetResult,oldLockTime)){
                     closeOrder(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
                 }else{
@@ -85,6 +87,8 @@ public class CloseOrderTask {
             if(getLock){
                 int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.hour"));
                 iOrderService.closeOrder(hour);
+            }else{
+                log.info("Redisson没有获取到分布式锁:{},ThreadName:{}",Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME,Thread.currentThread().getName());
             }
         } catch (Exception e) {
             log.info("Redisson没有获取到分布式锁",e);

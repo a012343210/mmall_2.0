@@ -202,6 +202,12 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByError();
     }
 
+    //shiro
+    @Override
+    public ServerResponse<User> findUserByUsername(String username) {
+        User user = userMapper.findUserByUsername(username);
+        return ServerResponse.createBySuccess(user);
+    }
 
 
 }

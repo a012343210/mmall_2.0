@@ -11,6 +11,9 @@ import com.mmall.util.JsonUtils;
 import com.mmall.util.RedisShardedPoolUtil;
 import com.sun.corba.se.spi.activation.Server;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.Security;
 
 
 @Controller
@@ -39,20 +43,34 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "login.do", method = RequestMethod.POST)
+    @RequestMapping(value = "login.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        ServerResponse<User> response = iUserService.login(username, password);
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
+        Subject subject = SecurityUtils.getSubject();
+        try{
+            subject.login(usernamePasswordToken);
+            User user = (User) subject.getPrincipal();
+            CookieUtil.writeCookie(httpServletResponse, session.getId());
+            RedisShardedPoolUtil.setEx(session.getId(), JsonUtils.objToString(user), Const.RedisCacheExTime.REDIS_CACHE_EX_TIME);
+            return ServerResponse.createBySuccess("登录成功",user);
+        }catch (Exception e){
+            return ServerResponse.createByError();
+        }
+
+        /*ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
             CookieUtil.writeCookie(httpServletResponse, session.getId());
             RedisShardedPoolUtil.setEx(session.getId(), JsonUtils.objToString(response.getData()), Const.RedisCacheExTime.REDIS_CACHE_EX_TIME);
         }
-        return response;
+        return response;*/
     }
 
-    @RequestMapping(value = "logout.do", method = RequestMethod.POST)
+    @RequestMapping(value = "logout.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
         String login_token = CookieUtil.getCookie(httpServletRequest);
         RedisShardedPoolUtil.del(login_token);
         CookieUtil.delCookie(httpServletRequest, httpServletResponse);

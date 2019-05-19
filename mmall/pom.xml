@@ -271,6 +271,19 @@
       <artifactId>jackson-dataformat-avro</artifactId>
       <version>2.9.0</version>
     </dependency>
+
+    <!--shiro-->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-spring</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+
   </dependencies>
 
 

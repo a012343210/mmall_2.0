@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+    <bean id="shiroFilterFactoryBean" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" name="shiroFilter">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/pages/login.jsp"/>
+        <property name="successUrl" value="/pages/index.jsp"/>
+        <property name="unauthorizedUrl" value="/pages/unauthorized.jsp"/>
+        <property name="filterChainDefinitions">
+            <value>
+                <!-- anon表示此地址不需要任何权限即可访问 -->
+                /user/login.do = anon
+                /user/logout.do = anon
+                /pages/login.jsp = anon
+                /pages/index.jsp = anon
+                /pages/unauthorized.jsp = anon
+                <!-- 所有的请求(除去配置的静态资源请求或请求地址为anon的请求)都要通过登录验证,如果未登录则跳到unauthorizedUrl指定的url -->
+                /** = authc
+            </value>
+        </property>
+    </bean>
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="authRealm"/>
+    </bean>
+
+    <bean id="authRealm" class="com.mmall.shiro.AuthRealm">
+        <property name="credentialsMatcher" ref="credentialMatcher"/>
+    </bean>
+
+    <bean id="credentialMatcher" class="com.mmall.util.CredentialMatcher"/>
+    <bean
+            class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" />
+    </bean>
+</beans>

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Description:
  */
 public class CookieUtil {
-    private static String COOKIE_DOMAIN = ".hsx.com";
+    private static String COOKIE_DOMAIN = "localhost";
     private static String COOKIE_NAME = "hsx_login_token";
 
     /**
