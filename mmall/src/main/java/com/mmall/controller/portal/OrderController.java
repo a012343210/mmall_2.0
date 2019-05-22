@@ -105,17 +105,23 @@ public class OrderController {
 
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse list(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+    public ServerResponse list(HttpSession session,HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         String login_token = CookieUtil.getCookie(httpServletRequest);
         if (StringUtils.isEmpty(login_token)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
         }
-        String userJson = RedisShardedPoolUtil.get(login_token);
-        User user = JsonUtils.String2Object(userJson, User.class);
-        if (user == null) {
+        User user =(User) session.getAttribute(Const.CURRENT_USER);
+        if(null == user){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+
         }
-        return iOrderService.getOrderList(user.getId(), pageNum, pageSize);
+        String token = RedisShardedPoolUtil.get(Const.SHIRO_REDIS_TOKEN_PREFIX+user.getId());
+        if(StringUtils.equals(token,login_token)){
+            return iOrderService.getOrderList(user.getId(), pageNum, pageSize);
+        }
+
+        return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+
     }
 
 

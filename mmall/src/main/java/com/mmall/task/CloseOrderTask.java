@@ -76,7 +76,7 @@ public class CloseOrderTask {
     }
 
     //每一分钟执行一次关单
-    @Scheduled(cron = "0 */1 * * * ?")
+    //@Scheduled(cron = "0 */1 * * * ?")
     public void CloseOrderV4(){
         Redisson redisson = RedissonManager.getRedisson();
         RLock lock = redisson.getLock(Const.closeOrderLock.CLOSE_ORDER_LOCK_TIME);
