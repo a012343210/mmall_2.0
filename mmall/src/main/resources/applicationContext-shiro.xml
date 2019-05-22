@@ -10,6 +10,11 @@
         <property name="loginUrl" value="/pages/login.jsp"/>
         <property name="successUrl" value="/pages/index.jsp"/>
         <property name="unauthorizedUrl" value="/pages/unauthorized.jsp"/>
+        <property name="filters">
+            <map>
+                <entry key="checkLoginFilter" value-ref="checkLoginFilter" />
+            </map>
+        </property>
         <property name="filterChainDefinitions">
             <value>
                 <!-- anon表示此地址不需要任何权限即可访问 -->
@@ -60,8 +65,8 @@
 
     <bean id="credentialMatcher" class="com.mmall.util.CredentialMatcher"/>
 
-    <bean
-            class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager" />
     </bean>
+    <bean id="checkLoginFilter" class="com.mmall.shiro.CheckLoginFilter";
 </beans>
