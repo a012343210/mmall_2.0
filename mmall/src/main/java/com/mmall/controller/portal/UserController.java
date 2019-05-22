@@ -6,7 +6,6 @@ import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtils;
 import com.mmall.util.RedisShardedPoolUtil;
-import com.sun.corba.se.spi.activation.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;

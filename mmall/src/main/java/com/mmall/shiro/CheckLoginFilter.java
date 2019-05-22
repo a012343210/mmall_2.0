@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Auther: Administrator
  * @Date: 2019/5/22 14:55
  * @Description:
+ * 暂时还未使用
  */
 public class CheckLoginFilter extends AccessControlFilter {
 
