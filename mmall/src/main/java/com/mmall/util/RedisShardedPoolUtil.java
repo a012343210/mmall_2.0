@@ -147,6 +147,96 @@ public class RedisShardedPoolUtil {
 
     }
 
+    /**
+     * 获取byte类型数据
+     * @param key
+     * @return
+     */
+    public static byte[] getObject(byte[] key,int expireTime){
+        ShardedJedis jedis = RedisShardedPool.getJedis();
+        byte[] bytes = null;
+        if(jedis != null){
+            try{
+                bytes = jedis.get(key);
+                if(null != bytes){
+                    jedis.expire(key,expireTime);
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            } finally{
+                returnResource(jedis);
+            }
+        }
+        return bytes;
+    }
+
+    /**
+     * 保存byte类型数据
+     * @param key
+     * @param value
+     */
+    public static void setObject(byte[] key, byte[] value,int expireTime){
+        ShardedJedis jedis = RedisShardedPool.getJedis();
+        if(jedis != null){
+            try{
+                jedis.set(key, value);
+                // redis中session过期时间
+                jedis.expire(key, expireTime);
+            } catch(Exception e){
+                e.printStackTrace();
+            } finally{
+                returnResource(jedis);
+            }
+        }
+    }
+
+    /**
+     * 更新byte类型的数据，主要更新过期时间
+     * @param key
+     */
+    public static void updateObject(byte[] key,byte[] value,int expireTime){
+        ShardedJedis jedis = RedisShardedPool.getJedis();
+        if(jedis != null){
+            try{
+                // redis中session过期时间
+                jedis.set(key, value);
+                jedis.expire(key, expireTime);
+            }catch(Exception e){
+                e.printStackTrace();
+            } finally{
+                returnResource(jedis);
+            }
+        }
+    }
+
+    /**
+     * 删除字符串数据
+     * @param key
+     */
+    public static void delString(String key){
+        ShardedJedis jedis = RedisShardedPool.getJedis();
+        if(jedis != null){
+            try{
+                jedis.del(key);
+            }catch(Exception e){
+                e.printStackTrace();
+            } finally{
+                returnResource(jedis);
+            }
+        }
+    }
+
+    /**
+     * 释放jedis资源
+     * @param jedis
+     */
+    public static void returnResource(final ShardedJedis jedis) {
+        if (jedis != null) {
+            RedisShardedPool.returnResource(jedis);
+        }
+    }
+
+
 
 
 }

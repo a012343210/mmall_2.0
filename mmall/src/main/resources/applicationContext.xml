@@ -19,7 +19,7 @@
     <task:annotation-driven/>
 
  <import resource="applicationContext-datasource.xml"/>
-    <import resource="applicationContext-session.xml"/>
+    <!--<import resource="applicationContext-session.xml"/>-->
     <import resource="applicationContext-shiro.xml"/>
 
 

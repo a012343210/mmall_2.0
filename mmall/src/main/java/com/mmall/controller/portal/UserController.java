@@ -1,9 +1,6 @@
 package com.mmall.controller.portal;
 
-import com.mmall.common.Const;
-import com.mmall.common.RedisPool;
-import com.mmall.common.ResponseCode;
-import com.mmall.common.ServerResponse;
+import com.mmall.common.*;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
@@ -13,6 +10,7 @@ import com.sun.corba.se.spi.activation.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 import java.security.Security;
+import java.util.UUID;
 
 
 @Controller
@@ -40,19 +40,27 @@ public class UserController {
      *
      * @param username
      * @param password
-     * @param session
      * @return
      */
     @RequestMapping(value = "login.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+    public ServerResponse<User> login(String username, String password, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
         Subject subject = SecurityUtils.getSubject();
+
         try{
             subject.login(usernamePasswordToken);
             User user = (User) subject.getPrincipal();
-            CookieUtil.writeCookie(httpServletResponse, session.getId());
-            RedisShardedPoolUtil.setEx(session.getId(), JsonUtils.objToString(user), Const.RedisCacheExTime.REDIS_CACHE_EX_TIME);
+            Serializable sessionId = subject.getSession().getId();
+            //保存user到session中
+            Session session = ShiroSessionRedisUtil.getSession(sessionId);
+            session.setAttribute(Const.CURRENT_USER,user);
+            //更新redis
+            ShiroSessionRedisUtil.updateSession(session);
+            //生成一条token放入redis
+            String token = UUID.randomUUID().toString().trim().replaceAll("-", "");
+            RedisShardedPoolUtil.setEx(Const.SHIRO_REDIS_TOKEN_PREFIX+user.getId(), token, Const.SHIRO_REDIS_EXTIRETIME);
+            CookieUtil.writeCookie(httpServletResponse, token);
             return ServerResponse.createBySuccess("登录成功",user);
         }catch (Exception e){
             return ServerResponse.createByError();
@@ -66,6 +74,10 @@ public class UserController {
         return response;*/
     }
 
+    public static void main(String[] args) {
+        String token = UUID.randomUUID().toString().trim().replaceAll("-", "");
+        System.out.printf(token);
+    }
     @RequestMapping(value = "logout.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {

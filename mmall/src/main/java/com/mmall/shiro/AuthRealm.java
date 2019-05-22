@@ -1,13 +1,17 @@
 package com.mmall.shiro;
 
+import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -32,7 +36,13 @@ public class AuthRealm extends AuthorizingRealm {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
         String username = usernamePasswordToken.getUsername();
         ServerResponse<User> response = iUserService.findUserByUsername(username);
-        User user = response.getData();
-        return new SimpleAuthenticationInfo(user,user.getPassword(),this.getClass().getName());
+        if(null != response.getData()){
+            User user = response.getData();
+            return new SimpleAuthenticationInfo(user,user.getPassword(),this.getClass().getName());
+        }else{
+            return null;
+        }
     }
+
+
 }

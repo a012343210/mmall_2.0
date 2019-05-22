@@ -10,6 +10,10 @@ public class Const {
     public static final String CURRENT_USER = "currentUser";
 
     public static final String EMAIL = "email";
+    public static final String SHIRO_REDIS_SESSION_PREFIX = "shiroSession_";
+    public static final String SHIRO_REDIS_PREFIX = "redis_";
+    public static final String SHIRO_REDIS_TOKEN_PREFIX = "SshiroToken__";
+    public static final int SHIRO_REDIS_EXTIRETIME = 30*60;
     public static final String USERNAME = "username";
 
     public static final String TOKEN_PREFIX = "token_";
